@@ -1,0 +1,11 @@
+{
+  "$schema": "https://cdn.railway.app/schema.json",
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "npm run migrate && npm start",
+    "restartPolicyMaxRetries": 3,
+    "restartPolicyWindowMs": 60000
+  }
+}
