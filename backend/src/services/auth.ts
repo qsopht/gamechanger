@@ -18,7 +18,7 @@ export function generateToken(userId: string, email: string): string {
 
   const expiresIn = process.env.JWT_EXPIRY || '7d';
 
-  return jwt.sign({ id: userId, email }, secret, { expiresIn });
+  return jwt.sign({ id: userId, email }, secret, { expiresIn } as any);
 }
 
 export function generateRefreshToken(userId: string): string {
