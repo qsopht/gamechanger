@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, Row, Col, Select, message, Table, Spin, Space, Tag, Statistic } from 'antd';
+import { Button, Card, Row, Col, Select, message, Table, Spin, Space, Tag } from 'antd';
 import { ArrowLeftOutlined, SendOutlined } from '@ant-design/icons';
 import * as api from '../services/api';
 
