@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import { initializeDatabase } from './db';
 import { errorHandler } from './middleware/auth';
 import authRoutes from './routes/auth';
@@ -20,6 +21,10 @@ app.use(cors({
   credentials: true
 }));
 
+// Serve frontend static files
+const frontendPath = path.join(__dirname, '../../../frontend/dist');
+app.use(express.static(frontendPath));
+
 // Routes
 app.use('/auth', authRoutes);
 app.use('/plans', planRoutes);
@@ -29,6 +34,11 @@ app.use('/observer', observerRoutes);
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
+});
+
+// Serve frontend for all other routes (SPA fallback)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // Error handling
