@@ -9,7 +9,7 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { setToken, setUser } = useAuthStore();
   const navigate = useNavigate();
-  const enableRegistration = import.meta.env.VITE_ENABLE_REGISTRATION !== 'false';
+  const enableRegistration = (import.meta as any).env.VITE_ENABLE_REGISTRATION !== 'false';
 
   const handleLogin = async (values: any) => {
     try {

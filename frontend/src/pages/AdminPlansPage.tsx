@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/authStore';
 import * as subscriptionService from '../services/subscriptionService';
 import api from '../services/api';
 import { PlanForm } from '../components/PlanForm';
-import { Layout, Table, Button, Space, message, Modal, Card, Row, Col, Tabs } from 'antd';
+import { Layout, Table, Button, message, Modal, Card, Tabs } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 
 export function AdminPlansPage() {

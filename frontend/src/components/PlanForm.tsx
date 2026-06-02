@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Form, Input, Button, InputNumber, Select, Divider, Space, Tag } from 'antd';
-import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { SubscriptionPlan } from '../services/subscriptionService';
 
 interface PlanFormProps {
