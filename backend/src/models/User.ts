@@ -15,21 +15,21 @@ export async function createUser(email: string, passwordHash: string, fullName?:
     VALUES (${email}, ${passwordHash}, ${fullName || null})
     RETURNING *
   `;
-  return result[0];
+  return result[0] as User;
 }
 
 export async function getUserById(id: string): Promise<User | null> {
   const result = await sql`
     SELECT * FROM users WHERE id = ${id}
   `;
-  return result[0] || null;
+  return (result[0] as User) || null;
 }
 
 export async function getUserByEmail(email: string): Promise<User | null> {
   const result = await sql`
     SELECT * FROM users WHERE email = ${email}
   `;
-  return result[0] || null;
+  return (result[0] as User) || null;
 }
 
 export async function updateUser(id: string, updates: Partial<User>): Promise<User> {
@@ -41,5 +41,5 @@ export async function updateUser(id: string, updates: Partial<User>): Promise<Us
     WHERE id = ${id}
     RETURNING *
   `;
-  return result[0];
+  return result[0] as User;
 }

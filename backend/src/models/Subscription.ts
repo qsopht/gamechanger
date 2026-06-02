@@ -25,14 +25,14 @@ export async function createSubscription(
     VALUES (${userId}, ${planId}, ${stripeSubscriptionId || null}, 'active')
     RETURNING *
   `;
-  return result[0];
+  return result[0] as Subscription;
 }
 
 export async function getSubscriptionById(id: string): Promise<Subscription | null> {
   const result = await sql`
     SELECT * FROM subscriptions WHERE id = ${id}
   `;
-  return result[0] || null;
+  return (result[0] as Subscription) || null;
 }
 
 export async function getUserSubscriptions(userId: string): Promise<Subscription[]> {
@@ -40,7 +40,7 @@ export async function getUserSubscriptions(userId: string): Promise<Subscription
     SELECT * FROM subscriptions WHERE user_id = ${userId}
     ORDER BY created_at DESC
   `;
-  return result;
+  return result as unknown as Subscription[];
 }
 
 export async function getUserActiveSubscription(userId: string, planId: string): Promise<Subscription | null> {
@@ -48,7 +48,7 @@ export async function getUserActiveSubscription(userId: string, planId: string):
     SELECT * FROM subscriptions 
     WHERE user_id = ${userId} AND plan_id = ${planId} AND status IN ('active', 'past_due')
   `;
-  return result[0] || null;
+  return (result[0] as Subscription) || null;
 }
 
 export async function updateSubscription(
@@ -68,7 +68,7 @@ export async function updateSubscription(
     WHERE id = ${id}
     RETURNING *
   `;
-  return result[0];
+  return result[0] as Subscription;
 }
 
 export async function cancelSubscription(id: string, atPeriodEnd: boolean = true): Promise<Subscription> {
@@ -83,5 +83,5 @@ export async function getSubscriptionByStripeId(stripeId: string): Promise<Subsc
   const result = await sql`
     SELECT * FROM subscriptions WHERE stripe_subscription_id = ${stripeId}
   `;
-  return result[0] || null;
+  return (result[0] as Subscription) || null;
 }

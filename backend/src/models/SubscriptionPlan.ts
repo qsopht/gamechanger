@@ -25,21 +25,21 @@ export async function createPlan(
     VALUES (${name}, ${description || null}, ${price}, ${billingCycle}, ${features ? JSON.stringify(features) : null}, ${stripePriceId || null})
     RETURNING *
   `;
-  return result[0];
+  return result[0] as SubscriptionPlan;
 }
 
 export async function getPlanById(id: string): Promise<SubscriptionPlan | null> {
   const result = await sql`
     SELECT * FROM subscription_plans WHERE id = ${id}
   `;
-  return result[0] || null;
+  return (result[0] as SubscriptionPlan) || null;
 }
 
 export async function getAllPlans(): Promise<SubscriptionPlan[]> {
   const result = await sql`
     SELECT * FROM subscription_plans ORDER BY price ASC
   `;
-  return result;
+  return result as unknown as SubscriptionPlan[];
 }
 
 export async function updatePlan(id: string, updates: Partial<SubscriptionPlan>): Promise<SubscriptionPlan> {
@@ -55,7 +55,7 @@ export async function updatePlan(id: string, updates: Partial<SubscriptionPlan>)
     WHERE id = ${id}
     RETURNING *
   `;
-  return result[0];
+  return result[0] as SubscriptionPlan;
 }
 
 export async function deletePlan(id: string): Promise<void> {
