@@ -23,14 +23,14 @@ export async function createInvoice(
     VALUES (${subscriptionId}, ${amount}, ${currency}, ${stripeInvoiceId || null})
     RETURNING *
   `;
-  return result[0];
+  return result[0] as Invoice;
 }
 
 export async function getInvoiceById(id: string): Promise<Invoice | null> {
   const result = await sql`
     SELECT * FROM invoices WHERE id = ${id}
   `;
-  return result[0] || null;
+  return (result[0] as Invoice) || null;
 }
 
 export async function getSubscriptionInvoices(subscriptionId: string): Promise<Invoice[]> {
@@ -38,7 +38,7 @@ export async function getSubscriptionInvoices(subscriptionId: string): Promise<I
     SELECT * FROM invoices WHERE subscription_id = ${subscriptionId}
     ORDER BY created_at DESC
   `;
-  return result;
+  return result as Invoice[];
 }
 
 export async function updateInvoice(id: string, updates: Partial<Invoice>): Promise<Invoice> {
@@ -51,7 +51,7 @@ export async function updateInvoice(id: string, updates: Partial<Invoice>): Prom
     WHERE id = ${id}
     RETURNING *
   `;
-  return result[0];
+  return result[0] as Invoice;
 }
 
 export async function markInvoiceAsPaid(id: string): Promise<Invoice> {
