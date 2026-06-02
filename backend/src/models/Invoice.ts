@@ -38,7 +38,7 @@ export async function getSubscriptionInvoices(subscriptionId: string): Promise<I
     SELECT * FROM invoices WHERE subscription_id = ${subscriptionId}
     ORDER BY created_at DESC
   `;
-  return result as Invoice[];
+  return result as unknown as Invoice[];
 }
 
 export async function updateInvoice(id: string, updates: Partial<Invoice>): Promise<Invoice> {
@@ -65,5 +65,5 @@ export async function getInvoiceByStripeId(stripeId: string): Promise<Invoice | 
   const result = await sql`
     SELECT * FROM invoices WHERE stripe_invoice_id = ${stripeId}
   `;
-  return result[0] || null;
+  return (result[0] as Invoice) || null;
 }

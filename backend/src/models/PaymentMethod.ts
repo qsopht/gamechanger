@@ -23,14 +23,14 @@ export async function createPaymentMethod(
     VALUES (${userId}, ${stripePaymentMethodId}, ${cardBrand || null}, ${cardLastFour || null}, ${isDefault})
     RETURNING *
   `;
-  return result[0];
+  return result[0] as PaymentMethod;
 }
 
 export async function getPaymentMethodById(id: string): Promise<PaymentMethod | null> {
   const result = await sql`
     SELECT * FROM payment_methods WHERE id = ${id}
   `;
-  return result[0] || null;
+  return (result[0] as PaymentMethod) || null;
 }
 
 export async function getUserPaymentMethods(userId: string): Promise<PaymentMethod[]> {
@@ -38,7 +38,7 @@ export async function getUserPaymentMethods(userId: string): Promise<PaymentMeth
     SELECT * FROM payment_methods WHERE user_id = ${userId}
     ORDER BY is_default DESC, created_at DESC
   `;
-  return result;
+  return result as unknown as PaymentMethod[];
 }
 
 export async function getDefaultPaymentMethod(userId: string): Promise<PaymentMethod | null> {
@@ -46,7 +46,7 @@ export async function getDefaultPaymentMethod(userId: string): Promise<PaymentMe
     SELECT * FROM payment_methods WHERE user_id = ${userId} AND is_default = true
     LIMIT 1
   `;
-  return result[0] || null;
+  return (result[0] as PaymentMethod) || null;
 }
 
 export async function setDefaultPaymentMethod(userId: string, paymentMethodId: string): Promise<void> {
