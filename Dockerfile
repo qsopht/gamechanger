@@ -14,8 +14,9 @@ COPY frontend ./frontend
 # Install dependencies
 RUN npm ci
 
-# Build backend and frontend
-RUN npm run build
+# Build both backend and frontend
+RUN npm run build:backend
+RUN npm run build:frontend
 
 # Expose port
 EXPOSE 3000
