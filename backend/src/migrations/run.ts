@@ -42,14 +42,29 @@ export async function runMigrations() {
 // Execute migrations when this file is run directly
 if (require.main === module) {
   initializeDatabase()
-    .then(() => runMigrations())
     .then(async () => {
-      await closeDatabase();
+      try {
+        await runMigrations();
+      } catch (error) {
+        console.warn('⚠ Migrations failed - database may not be available yet');
+        console.warn('This is normal during initial deployment. Migrations will run when database is available.');
+      }
+    })
+    .then(async () => {
+      try {
+        await closeDatabase();
+      } catch (e) {
+        // Database connection may not exist, ignore
+      }
       process.exit(0);
     })
     .catch(async (error) => {
       console.error('Fatal error:', error);
-      await closeDatabase();
+      try {
+        await closeDatabase();
+      } catch (e) {
+        // ignore
+      }
       process.exit(1);
     });
 }

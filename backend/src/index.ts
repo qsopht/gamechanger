@@ -25,7 +25,7 @@ app.use(cors({
 const frontendPath = path.join(__dirname, '../../../frontend/dist');
 app.use(express.static(frontendPath));
 
-// Routes
+// API Routes
 app.use('/auth', authRoutes);
 app.use('/plans', planRoutes);
 app.use('/subscriptions', subscriptionRoutes);
@@ -36,13 +36,19 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Serve frontend for all other routes (SPA fallback)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'));
-});
-
-// Error handling
+// Error handling middleware
 app.use(errorHandler);
+
+// Serve frontend for all other routes (SPA fallback) - MUST BE LAST
+app.get('*', (req, res) => {
+  const indexPath = path.join(frontendPath, 'index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error('Error serving index.html:', err);
+      res.status(500).send('Frontend not found. Please ensure frontend is built.');
+    }
+  });
+});
 
 // Start server
 async function startServer() {
