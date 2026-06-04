@@ -1,25 +1,25 @@
 import postgres from 'postgres';
 import dotenv from 'dotenv';
 
+// Load from .env file in development (won't exist in production)
 dotenv.config();
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://user:password@localhost:5432/gamechanger';
-console.log('DATABASE_URL env var exists:', !!process.env.DATABASE_URL);
-console.log('Using connection string:', connectionString.replace(/:[^@]*@/, ':***@')); // Hide password
+// Always check environment variables directly (they're set by Railway)
+const connectionString = process.env.DATABASE_URL;
+console.log('DATABASE_URL available:', !!connectionString);
 
-// Parse the connection string to see what we're connecting to
-try {
-  const url = new URL(connectionString);
-  console.log('Parsed connection - Host:', url.hostname, 'Port:', url.port);
-} catch (e) {
-  console.error('Failed to parse connection string:', e);
+if (!connectionString) {
+  console.warn('⚠️  DATABASE_URL not set - will use fallback');
 }
 
-export const sql = postgres(connectionString, {
+export const sql = postgres(connectionString || 'postgresql://user:password@localhost:5432/gamechanger', {
   max: 20,
   idle_timeout: 30,
   connect_timeout: 10,
-  ssl: process.env.NODE_ENV === 'production' ? 'require' : false,
+  // Always require SSL in production/railway
+  ssl: process.env.NODE_ENV === 'production' || connectionString?.includes('.railway.') ? {
+    rejectUnauthorized: false
+  } : false,
 });
 
 export async function initializeDatabase() {
