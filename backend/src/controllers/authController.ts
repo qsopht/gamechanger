@@ -30,9 +30,11 @@ export async function register(req: AuthRequest, res: Response): Promise<void> {
         fullName: user.full_name
       }
     });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ error: 'Registration failed' });
+  } catch (error: any) {
+    console.error('Registration error:', error?.message || error);
+    console.error('Error code:', error?.code);
+    console.error('Full error:', JSON.stringify(error, null, 2));
+    res.status(500).json({ error: 'Registration failed', details: error?.message });
   }
 }
 
@@ -66,9 +68,11 @@ export async function login(req: AuthRequest, res: Response): Promise<void> {
         fullName: user.full_name
       }
     });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Login failed' });
+  } catch (error: any) {
+    console.error('Login error:', error?.message || error);
+    console.error('Error code:', error?.code);
+    console.error('Full error:', JSON.stringify(error, null, 2));
+    res.status(500).json({ error: 'Login failed', details: error?.message });
   }
 }
 
