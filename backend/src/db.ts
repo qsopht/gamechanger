@@ -1,20 +1,9 @@
 import postgres from 'postgres';
-import dotenv from 'dotenv';
-import path from 'path';
 
-// Only load .env if it exists (local development only)
-const envPath = path.resolve(process.cwd(), '.env');
-try {
-  const fs = require('fs');
-  if (fs.existsSync(envPath)) {
-    dotenv.config({ path: envPath });
-  }
-} catch (e) {
-  // Ignore errors when checking for .env file
-}
-
-// Get connection string - Railway sets DATABASE_URL in production
-let connectionString = process.env.DATABASE_URL;
+// Get connection string from environment
+// In development, this comes from .env file (loaded by ts-node/dotenv)
+// In production (Railway), this is set as an environment variable
+const connectionString = process.env.DATABASE_URL;
 
 // Log for debugging
 console.log('=== Database Configuration ===');
@@ -23,6 +12,10 @@ console.log('DATABASE_URL exists:', !!connectionString);
 if (connectionString) {
   // Log first 30 chars to verify it's a valid postgres URL
   console.log('DATABASE_URL starts with:', connectionString.substring(0, 30));
+  // Check if it looks like localhost (invalid on Railway)
+  if (connectionString.includes('localhost') || connectionString.includes('127.0.0.1') || connectionString.includes('::1')) {
+    console.warn('⚠️  DATABASE_URL points to localhost - this will fail on Railway!');
+  }
 } else {
   console.log('DATABASE_URL not found, will use fallback');
 }
