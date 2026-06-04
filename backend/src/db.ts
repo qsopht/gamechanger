@@ -23,12 +23,11 @@ if (process.env.NODE_ENV !== 'production') {
   console.log('  DATABASE_URL exists:', !!connectionString);
 }
 
-// Create postgres connection
+// Create postgres connection with proper options for Railway
 const pgOptions: any = {
   max: 20,
   idle_timeout: 30,
   connect_timeout: 10,
-  socket: { family: 4 }, // Force IPv4 (::1 is IPv6, causing issues)
 };
 
 // Enable SSL for Railway (detect by connection string or NODE_ENV)
@@ -38,10 +37,10 @@ if (connectionString) {
   }
 }
 
-export const sql = postgres(
-  connectionString || 'postgresql://user:password@localhost:5432/gamechanger',
-  pgOptions
-);
+// If DATABASE_URL is set, use it; otherwise fall back to localhost
+const url = connectionString || 'postgresql://user:password@localhost:5432/gamechanger';
+
+export const sql = postgres(url, pgOptions);
 
 export async function initializeDatabase() {
   try {
