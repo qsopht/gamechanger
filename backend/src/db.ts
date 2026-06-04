@@ -3,8 +3,12 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://user:password@localhost:5432/gamechanger';
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error('DATABASE_URL environment variable is not set. Please configure your database connection.');
+}
 
+console.log('Connecting to database...');
 export const sql = postgres(connectionString, {
   max: 20,
   idle_timeout: 30,
