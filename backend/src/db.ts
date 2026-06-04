@@ -14,14 +14,19 @@ try {
 }
 
 // Get connection string - Railway sets DATABASE_URL in production
-const connectionString = process.env.DATABASE_URL;
+let connectionString = process.env.DATABASE_URL;
 
 // Log for debugging
-if (process.env.NODE_ENV !== 'production') {
-  console.log('Database configuration:');
-  console.log('  NODE_ENV:', process.env.NODE_ENV);
-  console.log('  DATABASE_URL exists:', !!connectionString);
+console.log('=== Database Configuration ===');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('DATABASE_URL exists:', !!connectionString);
+if (connectionString) {
+  // Log first 30 chars to verify it's a valid postgres URL
+  console.log('DATABASE_URL starts with:', connectionString.substring(0, 30));
+} else {
+  console.log('DATABASE_URL not found, will use fallback');
 }
+console.log('==============================');
 
 // Create postgres connection with proper options for Railway
 const pgOptions: any = {
