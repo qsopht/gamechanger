@@ -22,7 +22,8 @@ app.use(cors({
 }));
 
 // Serve frontend static files
-const frontendPath = path.join(__dirname, '../../../frontend/dist');
+const frontendPath = path.join(__dirname, '../../frontend/dist');
+console.log(`Serving frontend from: ${frontendPath}`);
 app.use(express.static(frontendPath));
 
 // API Routes
