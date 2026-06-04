@@ -1,6 +1,10 @@
 import axios, { AxiosInstance } from 'axios';
 
-const baseURL = (import.meta as any).env.VITE_API_BASE_URL || 'http://localhost:3000';
+// Use relative URL so API calls go to the same server as frontend
+// This works whether frontend is on localhost:3000 or Railway domain
+const baseURL = window.location.origin === 'http://localhost:5173' 
+  ? (import.meta as any).env.VITE_API_BASE_URL || 'http://localhost:3000'
+  : '';
 
 export const api: AxiosInstance = axios.create({
   baseURL,
