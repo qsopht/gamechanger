@@ -1,44 +1,24 @@
 import postgres from 'postgres';
 
-// Get connection string from environment
-// In development, this comes from .env file (loaded by ts-node/dotenv)
-// In production (Railway), this is set as an environment variable
+// Railway-only mode: DATABASE_URL must be provided
 const connectionString = process.env.DATABASE_URL;
 
-// Log for debugging
-console.log('=== Database Configuration ===');
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('DATABASE_URL exists:', !!connectionString);
-if (connectionString) {
-  // Log first 30 chars to verify it's a valid postgres URL
-  console.log('DATABASE_URL starts with:', connectionString.substring(0, 30));
-  // Check if it looks like localhost (invalid on Railway)
-  if (connectionString.includes('localhost') || connectionString.includes('127.0.0.1') || connectionString.includes('::1')) {
-    console.warn('⚠️  DATABASE_URL points to localhost - this will fail on Railway!');
-  }
-} else {
-  console.log('DATABASE_URL not found, will use fallback');
+if (!connectionString) {
+  console.error('ERROR: DATABASE_URL environment variable is required');
+  process.exit(1);
 }
-console.log('==============================');
+
+console.log('Database URL found, configuring postgres connection...');
 
 // Create postgres connection with proper options for Railway
 const pgOptions: any = {
   max: 20,
   idle_timeout: 30,
   connect_timeout: 10,
+  ssl: { rejectUnauthorized: false }, // Railway requires SSL
 };
 
-// Enable SSL for Railway (detect by connection string or NODE_ENV)
-if (connectionString) {
-  if (connectionString.includes('.railway.') || process.env.NODE_ENV === 'production') {
-    pgOptions.ssl = { rejectUnauthorized: false };
-  }
-}
-
-// If DATABASE_URL is set, use it; otherwise fall back to localhost
-const url = connectionString || 'postgresql://user:password@localhost:5432/gamechanger';
-
-export const sql = postgres(url, pgOptions);
+export const sql = postgres(connectionString, pgOptions);
 
 export async function initializeDatabase() {
   try {
